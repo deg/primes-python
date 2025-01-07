@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 primes = {path = ".", editable = true}
 click = "*"
+matplotlib = "*"
 
 [dev-packages]
 pytest = "*"

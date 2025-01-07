@@ -8,6 +8,8 @@ This will compute the prime factors and shapes for each natural number up to the
 """
 
 import click
+import matplotlib.pyplot as plt
+from collections import Counter
 
 
 @click.command()
@@ -25,19 +27,35 @@ import click
     show_default=True,
     help="Compute prime factors and shapes up to this limit.",
 )
-
-def primes(start, end):
+@click.option(
+    "--plot",
+    is_flag=True,
+    help="Plot the frequency distribution of prime factor shapes.",
+)
+@click.option(
+    "--top",
+    type=int,
+    default=20,
+    show_default=True,
+    help="Number of top shapes to display in the plot.",
+)
+def primes(start, end, plot, top):
     """
     CLI entry point to compute prime factors and shapes.
 
     Args:
-        upto (int): The upper limit for computing prime factors and shapes.
+        start (int): The starting number for computation.
+        end (int): The upper limit for computation.
+        plot (bool): Whether to plot the frequency distribution of shapes.
+        top (int): Number of top shapes to display in the plot.
     """
-    for number in range(start, end):
-        factors = prime_factors(number)
-        factor_shape = shape(number)
-        click.echo(f"{number}: factors={factors}, shape={factor_shape}")
-
+    if plot:
+        plot_distribution(start, end, top)
+    else:
+        for number in range(start, end + 1):
+            factors = prime_factors(number)
+            factor_shape = shape(number)
+            click.echo(f"{number}: factors={factors}, shape={factor_shape}")
 
 def prime_factors(n):
     """
@@ -84,6 +102,36 @@ def shape(n):
     factors = prime_factors(n)
     counts = [count for _, count in factors]
     return tuple(sorted(counts, reverse=True))
+
+
+def plot_distribution(start, end, top):
+    """
+    Plot the frequency distribution of prime factor shapes within a range.
+
+    Args:
+        start (int): The starting number of the range.
+        end (int): The ending number of the range.
+        top (int): The number of top shapes to display.
+    """
+    # Calculate the frequency of each shape
+    counts = Counter(shape(n) for n in range(start, end + 1))
+
+    # Sort shapes by descending frequency
+    sorted_shapes = sorted(counts.items(), key=lambda x: -x[1])
+
+    # Limit to the top `top` shapes
+    top_shapes = sorted_shapes[:top]
+    shapes, frequencies = zip(*top_shapes)
+
+    # Create a bar chart
+    plt.figure(figsize=(10, 6))
+    plt.bar(range(len(shapes)), frequencies, tick_label=[str(s) for s in shapes])
+    plt.xlabel("Prime Factor Shape")
+    plt.ylabel("Frequency")
+    plt.title(f"Top {top} Prime Factor Shapes (N = {start} to {end})")
+    plt.xticks(rotation=45, ha="right")
+    plt.tight_layout()
+    plt.show()
 
 
 if __name__ == "__main__":
