@@ -12,20 +12,28 @@ import click
 
 @click.command()
 @click.option(
-    "--upto",
+    "--start",
+    type=int,
+    default=2,
+    show_default=True,
+    help="Start computing prime factors and shapes from this number.",
+)
+@click.option(
+    "--end",
     type=int,
     default=1000,
     show_default=True,
     help="Compute prime factors and shapes up to this limit.",
 )
-def primes(upto):
+
+def primes(start, end):
     """
     CLI entry point to compute prime factors and shapes.
 
     Args:
         upto (int): The upper limit for computing prime factors and shapes.
     """
-    for number in range(2, upto + 1):
+    for number in range(start, end):
         factors = prime_factors(number)
         factor_shape = shape(number)
         click.echo(f"{number}: factors={factors}, shape={factor_shape}")
