@@ -7,9 +7,13 @@ Usage:
 This will compute the prime factors and shapes for each natural number up to the specified limit.
 """
 
+from collections import Counter
+from functools import lru_cache
+
 import click
 import matplotlib.pyplot as plt
-from collections import Counter
+from matplotlib.animation import FuncAnimation
+import numpy as np
 
 
 @click.command()
@@ -39,7 +43,12 @@ from collections import Counter
     show_default=True,
     help="Number of top shapes to display in the plot.",
 )
-def primes(start, end, plot, top):
+@click.option(
+    "--animate",
+    is_flag=True,
+    help="Animate the frequency distribution of prime factor shapes.",
+)
+def primes(start, end, plot, animate, top):
     """
     CLI entry point to compute prime factors and shapes.
 
@@ -49,7 +58,9 @@ def primes(start, end, plot, top):
         plot (bool): Whether to plot the frequency distribution of shapes.
         top (int): Number of top shapes to display in the plot.
     """
-    if plot:
+    if animate:
+        animate_distribution(start, end, top)
+    elif plot:
         plot_distribution(start, end, top)
     else:
         for number in range(start, end + 1):
@@ -58,6 +69,7 @@ def primes(start, end, plot, top):
             click.echo(f"{number}: factors={factors}, shape={factor_shape}")
 
 
+@lru_cache(maxsize=None)
 def prime_factors(n):
     """
     Generate the prime factors of a number as a list of (factor, count) tuples.
@@ -84,7 +96,9 @@ def prime_factors(n):
         if count > 0:
             factors.append((divisor, count))
         divisor += 1
-    if n > 1:  # If n is a prime number larger than the square root of the original number
+    if (
+        n > 1
+    ):  # If n is a prime number larger than the square root of the original number
         factors.append((n, 1))
     return factors
 
@@ -137,6 +151,82 @@ def plot_distribution(start, end, top):
     plt.xticks(rotation=45, ha="right")
     plt.tight_layout()
     plt.show()
+
+
+def animate_distribution(start, end, top, interval=25):
+    """
+    Animate the frequency distribution of prime factor shapes with log-bucket frame selection.
+
+    Args:
+        start (int): The starting number of the range.
+        end (int): The ending number of the range.
+        top (int): The number of top shapes to display.
+        interval (int): Time between frames in milliseconds.
+    """
+    # Generate frames
+    frame_points = generate_frames(start, end)
+
+    # Prepare the figure
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.set_xlabel("Prime Factor Shape")
+    ax.set_ylabel("Frequency")
+    ax.set_title(f"Top {top} Prime Factor Shapes")
+    bar_container = None
+
+    def update(frame):
+        # Incrementally compute shapes up to the current frame
+        current_shapes = [shape(n) for n in range(start, frame + 1)]
+        counts = Counter(current_shapes)
+        sorted_counts = sorted(counts.items(), key=lambda x: -x[1])[:top]
+
+        # Extract shapes and frequencies
+        shapes = [str(s[0]) for s in sorted_counts]
+        frequencies = [s[1] for s in sorted_counts]
+
+        # Update the bar chart
+        ax.clear()
+        ax.bar(shapes, frequencies)
+        ax.set_xticklabels(shapes, rotation=45, ha="right")
+        ax.set_xlabel("Prime Factor Shape")
+        ax.set_ylabel("Frequency")
+        ax.set_title(f"Top {top} Prime Factor Shapes (N = {start} to {frame})")
+
+    # Animation
+    ani = FuncAnimation(
+        fig, update, frames=frame_points, interval=interval, repeat=False
+    )
+
+    plt.tight_layout()
+    plt.show()
+
+
+def generate_frames(start, end, max_frames_per_bucket=250):
+    """
+    Generate frame points for animation using logarithmic buckets.
+
+    Args:
+        start (int): The starting number of the range.
+        end (int): The ending number of the range.
+        max_frames_per_bucket (int): Maximum number of frames per 10x growth.
+
+    Returns:
+        list[int]: A list of numbers representing frames to display.
+    """
+    frames = []
+    current = start
+
+    # Determine bucket boundaries (powers of 10)
+    while current <= end:
+        next_bucket = min(current * 10, end + 1)
+        num_frames = min(max_frames_per_bucket, next_bucket - current)
+
+        # Distribute frames evenly within this bucket
+        frames += list(
+            np.round(np.linspace(current, next_bucket - 1, num_frames)).astype(int)
+        )
+        current = next_bucket
+
+    return sorted(set(frames))
 
 
 if __name__ == "__main__":
