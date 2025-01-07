@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "primes"
+version = "0.1.0"
+description = "A CLI tool to find patterns in prime factorization"
+authors = [
+    {name = "David Goldfarb", email = "deg@degel.com"},
+]
+requires-python = ">=3.12"
+
+[project.scripts]
+primes = "primes.main:primes"
