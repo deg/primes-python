@@ -57,9 +57,12 @@ def primes(start, end, plot, top):
             factor_shape = shape(number)
             click.echo(f"{number}: factors={factors}, shape={factor_shape}")
 
+
 def prime_factors(n):
     """
     Generate the prime factors of a number as a list of (factor, count) tuples.
+
+    This function computes the factors directly using trial division.
 
     Args:
         n (int): The number to factorize.
@@ -73,7 +76,7 @@ def prime_factors(n):
     """
     factors = []
     divisor = 2
-    while n > 1:
+    while divisor * divisor <= n:
         count = 0
         while n % divisor == 0:
             n //= divisor
@@ -81,6 +84,8 @@ def prime_factors(n):
         if count > 0:
             factors.append((divisor, count))
         divisor += 1
+    if n > 1:  # If n is a prime number larger than the square root of the original number
+        factors.append((n, 1))
     return factors
 
 
