@@ -1,0 +1,25 @@
+site_name: Primes Documentation
+# site_url: https://your-site-url.com  # Replace with actual URL when hosting
+# repo_url: ...
+repo_name: primes
+site_author: David Goldfarb <deg@degel.com>
+copyright: (c) 2024 David Goldfarb
+
+theme:
+  name: material
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          selection:
+            docstring_style: google  # Or google, numpy, reStructuredText, etc.
+
+markdown_extensions:
+  - toc:
+      permalink: True
+  - codehilite:
+      guess_lang: false
+      use_pygments: true
+  - admonition
