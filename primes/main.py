@@ -10,6 +10,27 @@ This will compute the prime factors and shapes for each natural number up to the
 import click
 
 
+@click.command()
+@click.option(
+    "--upto",
+    type=int,
+    default=1000,
+    show_default=True,
+    help="Compute prime factors and shapes up to this limit.",
+)
+def primes(upto):
+    """
+    CLI entry point to compute prime factors and shapes.
+
+    Args:
+        upto (int): The upper limit for computing prime factors and shapes.
+    """
+    for number in range(2, upto + 1):
+        factors = prime_factors(number)
+        factor_shape = shape(number)
+        click.echo(f"{number}: factors={factors}, shape={factor_shape}")
+
+
 def prime_factors(n):
     """
     Generate the prime factors of a number as a list of (factor, count) tuples.
@@ -55,24 +76,6 @@ def shape(n):
     factors = prime_factors(n)
     counts = [count for _, count in factors]
     return tuple(sorted(counts, reverse=True))
-
-
-@click.command()
-@click.option("--upto",
-              type=int,
-              required=True,
-              help="Compute prime factors and shapes up to this limit.")
-def primes(upto):
-    """
-    CLI entry point to compute prime factors and shapes.
-
-    Args:
-        upto (int): The upper limit for computing prime factors and shapes.
-    """
-    for number in range(2, upto + 1):
-        factors = prime_factors(number)
-        factor_shape = shape(number)
-        click.echo(f"{number}: factors={factors}, shape={factor_shape}")
 
 
 if __name__ == "__main__":
