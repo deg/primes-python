@@ -40,3 +40,7 @@ test:
 # Create and serve documentation
 docs:
 	pipenv run mkdocs serve
+
+# Remove all work product files
+clean:
+	rm -rf __pycache__ */__pycache__ .pytest_cache .mypy_cache .coverage htmlcov .venv
