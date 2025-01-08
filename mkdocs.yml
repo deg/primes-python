@@ -1,7 +1,7 @@
-site_name: Primes Documentation
+site_name: Primes-python Documentation
 # site_url: https://your-site-url.com  # Replace with actual URL when hosting
 # repo_url: ...
-repo_name: primes
+repo_name: primes-python
 site_author: David Goldfarb <deg@degel.com>
 copyright: (c) 2024 David Goldfarb
 

@@ -1,5 +1,5 @@
 # Define the project name
-PROJECT_NAME := primes
+PROJECT_NAME := primes-python
 
 .DEFAULT_GOAL := help
 
