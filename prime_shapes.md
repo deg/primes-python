@@ -80,7 +80,7 @@ For numbers up to 10, the shapes and their frequencies are:
 
 | Shape  | Frequency | Numbers |
 |--------|-----------|---------|
-| [0]    | 1         | 1       |
+| []     | 1         | 1       |
 | [1]    | 4         | 2,3,5,7 |
 | [1, 1] | 2         | 6,10    |
 | [2]    | 2         | 4,9     |

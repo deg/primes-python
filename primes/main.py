@@ -114,12 +114,12 @@ def shape(n):
         n (int): The number to compute the shape for.
 
     Returns:
-        tuple[int]: A tuple of prime factor counts, sorted in descending order.
+        tuple[int]: A tuple of prime factor counts, sorted in descending order of exponent.
 
     Examples:
-        shape(10) -> (1, 1)  # 10 = 2^1 * 5^1
-        shape(50) -> (2, 1)  # 50 = 2^1 * 5^2
-        shape(30) -> (1, 1, 1)  # 30 = 2^1 * 3^1 * 5^1
+        shape(10) -> [1, 1]  # 10 = 2^1 * 5^1
+        shape(250) -> [3, 1]  # 50 = 2^1 * 5^3
+        shape(30) -> [1, 1, 1]  # 30 = 2^1 * 3^1 * 5^1
     """
 
     if n <= 0:
@@ -127,7 +127,7 @@ def shape(n):
 
     factors = prime_factors(n)
     counts = [count for _, count in factors]
-    return tuple(sorted(counts, reverse=True))
+    return sorted(counts, reverse=True)
 
 
 def plot_distribution(start, end, top):
@@ -140,7 +140,7 @@ def plot_distribution(start, end, top):
         top (int): The number of top shapes to display.
     """
     # Calculate the frequency of each shape
-    counts = Counter(shape(n) for n in range(start, end + 1))
+    counts = Counter(tuple(shape(n)) for n in range(start, end + 1))
 
     # Sort shapes by descending frequency
     sorted_shapes = sorted(counts.items(), key=lambda x: -x[1])
@@ -181,7 +181,7 @@ def animate_distribution(start, end, top, interval=25):
 
     def update(frame):
         # Incrementally compute shapes up to the current frame
-        current_shapes = [shape(n) for n in range(start, frame + 1)]
+        current_shapes = [tuple(shape(n)) for n in range(start, frame + 1)]
         counts = Counter(current_shapes)
         sorted_counts = sorted(counts.items(), key=lambda x: -x[1])[:top]
 
