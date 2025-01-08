@@ -70,7 +70,7 @@ def primes(start, end, plot, animate, top):
 
 
 @lru_cache(maxsize=None)
-def prime_factors(n):
+def prime_factors(n)-> list[tuple[int, int]]:
     """
     Generate the prime factors of a number as a list of (factor, count) tuples.
 
@@ -106,7 +106,7 @@ def prime_factors(n):
     return factors
 
 
-def shape(n):
+def shape(n) -> list[int]:
     """
     Determine the shape of a number's prime factorization as a tuple of counts.
 
@@ -114,7 +114,7 @@ def shape(n):
         n (int): The number to compute the shape for.
 
     Returns:
-        tuple[int]: A tuple of prime factor counts, sorted in descending order of exponent.
+        list[int]: A list of prime factor counts, sorted in descending order of exponent.
 
     Examples:
         shape(10) -> [1, 1]  # 10 = 2^1 * 5^1
@@ -192,7 +192,7 @@ def animate_distribution(start, end, top, interval=25):
         # Update the bar chart
         ax.clear()
         ax.bar(shapes, frequencies)
-        ax.set_xticks(range(len(shapes)))        # Set tick positions explicitly
+        ax.set_xticks(range(len(shapes)))  # Set tick positions explicitly
         ax.set_xticklabels(shapes, rotation=45, ha="right")
         ax.set_xlabel("Prime Factor Shape")
         ax.set_ylabel("Frequency")
@@ -207,7 +207,7 @@ def animate_distribution(start, end, top, interval=25):
     plt.show()
 
 
-def generate_frames(start, end, max_frames_per_bucket=250):
+def generate_frames(start, end, max_frames_per_bucket=250) -> list[int]:
     """
     Generate frame points for animation using logarithmic buckets.
 
