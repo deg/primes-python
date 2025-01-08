@@ -88,7 +88,7 @@ For numbers up to 10, the shapes and their frequencies are:
 
 ---
 
-## 6. Further Reading
+## 5. Further Reading
 
 - [Prime Factorization (Wikipedia)](https://en.wikipedia.org/wiki/Prime_factorization)
 - [Distribution of Prime Numbers](https://en.wikipedia.org/wiki/Distribution_of_prime_numbers)
