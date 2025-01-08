@@ -30,12 +30,14 @@ import numpy as np
     type=int,
     default=1000,
     show_default=True,
-    help="Compute prime factors and shapes up to this limit.",
+    help="Compute prime factors and shapes up to this number.",
 )
 @click.option(
-    "--plot",
-    is_flag=True,
-    help="Plot the frequency distribution of prime factor shapes.",
+    "--output",
+    type=click.Choice(["list", "plot", "animate", "video-out"]),
+    default="list",
+    show_default=True,
+    help="Specify the output format: list, plot, animate, or video-out.",
 )
 @click.option(
     "--top",
@@ -44,38 +46,33 @@ import numpy as np
     show_default=True,
     help="Number of top shapes to display in the plot.",
 )
-@click.option(
-    "--animate",
-    is_flag=True,
-    help="Animate the frequency distribution of prime factor shapes.",
-)
-def primes(start, end, plot, animate, top):
+def primes(start, end, output, top):
     """
     CLI entry point to compute prime factors and shapes.
 
     Args:
         start (int): The starting number for computation.
         end (int): The upper limit for computation.
-        plot (bool): Whether to plot the frequency distribution of shapes.
-        top (int): Number of top shapes to display in the plot.
+        output (str): The type of output (list, plot, animate, video-out).
+        top (int): Number of top shapes to display in plots or animations.
     """
-    if animate:
-        animate_distribution(start, end, top)
-    elif plot:
-        plot_distribution(start, end, top)
-    else:
+    if output == "list":
         for number in range(start, end + 1):
             factors = prime_factors(number)
             factor_shape = shape(number)
             click.echo(f"{number}: factors={factors}, shape={factor_shape}")
+    elif output == "plot":
+        plot_distribution(start, end, top)
+    elif output == "animate":
+        animate_distribution(start, end, top)
+    elif output == "video-out":
+        animate_distribution(start, end, top, save_as_file=True)
 
 
 @lru_cache(maxsize=None)
-def prime_factors(n) -> list[tuple[int, int]]:
+def prime_factors(n: int) -> list[tuple[int, int]]:
     """
     Generate the prime factors of a number as a list of (factor, count) tuples.
-
-    This function computes the factors directly using trial division.
 
     Args:
         n (int): The number to factorize.
@@ -100,16 +97,14 @@ def prime_factors(n) -> list[tuple[int, int]]:
         if count > 0:
             factors.append((divisor, count))
         divisor += 1
-    if (
-        n > 1
-    ):  # If n is a prime number larger than the square root of the original number
+    if n > 1:
         factors.append((n, 1))
     return factors
 
 
-def shape(n) -> list[int]:
+def shape(n: int) -> list[int]:
     """
-    Determine the shape of a number's prime factorization as a tuple of counts.
+    Determine the shape of a number's prime factorization as a list of counts.
 
     Args:
         n (int): The number to compute the shape for.
@@ -122,7 +117,6 @@ def shape(n) -> list[int]:
         shape(250) -> [3, 1]  # 50 = 2^1 * 5^3
         shape(30) -> [1, 1, 1]  # 30 = 2^1 * 3^1 * 5^1
     """
-
     if n <= 0:
         raise ValueError("Number must be greater than 0")
 
@@ -131,7 +125,7 @@ def shape(n) -> list[int]:
     return sorted(counts, reverse=True)
 
 
-def plot_distribution(start, end, top):
+def plot_distribution(start: int, end: int, top: int):
     """
     Plot the frequency distribution of prime factor shapes within a range.
 
@@ -161,7 +155,9 @@ def plot_distribution(start, end, top):
     plt.show()
 
 
-def animate_distribution(start, end, top, interval=25):
+def animate_distribution(
+    start: int, end: int, top: int, interval=20, save_as_file: bool = False
+):
     """
     Animate the frequency distribution of prime factor shapes with log-bucket frame selection.
 
@@ -193,7 +189,7 @@ def animate_distribution(start, end, top, interval=25):
         # Update the bar chart
         ax.clear()
         ax.bar(shapes, frequencies)
-        ax.set_xticks(range(len(shapes)))  # Set tick positions explicitly
+        ax.set_xticks(range(len(shapes)))
         ax.set_xticklabels(shapes, rotation=45, ha="right")
         ax.set_xlabel("Prime Factor Shape")
         ax.set_ylabel("Frequency")
@@ -206,9 +202,10 @@ def animate_distribution(start, end, top, interval=25):
 
     plt.tight_layout()
 
-    saveAsFile = True
-    if saveAsFile:
+    if save_as_file:
+        click.echo("Generating video. Please wait...")
         ani.save("video-out.mp4", writer=FFMpegWriter(fps=10))
+        click.echo("Video saved as 'video-out.mp4'.")
     else:
         plt.show()
 
