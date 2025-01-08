@@ -183,7 +183,7 @@ def animate_distribution(
         sorted_counts = sorted(counts.items(), key=lambda x: -x[1])[:top]
 
         # Extract shapes and frequencies
-        shapes = [str(s[0]) for s in sorted_counts]
+        shapes = [str(list(s[0])) for s in sorted_counts]
         frequencies = [s[1] for s in sorted_counts]
 
         # Update the bar chart
