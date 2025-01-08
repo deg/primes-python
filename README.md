@@ -4,7 +4,7 @@ This is a toy CLI Python project which I wrote mostly to learn VS Code tooling.
 
 To give it some purpose, I've explored a math question that I've wondered about for a while: the relative frequency of different clasess of multiples of primes. For full details, see the accompanying [Prime Shapes](./prime_shapes.md) article.
 
-You can also watch a [video](video-5m.mp4) that animates the changes in frequency.
+You can also watch a video, [video-5m.mp4](https://youtu.be/sIeSAOdCoBM), that animates the changes in frequency.
 
 ## Installation
 
