@@ -86,6 +86,9 @@ def prime_factors(n):
         prime_factors(10) -> [(2, 1), (5, 1)]
         prime_factors(200) -> [(2, 3), (5, 2)]
     """
+    if n <= 0:
+        raise ValueError("Number must be greater than 0")
+
     factors = []
     divisor = 2
     while divisor * divisor <= n:
@@ -118,6 +121,10 @@ def shape(n):
         shape(50) -> (2, 1)  # 50 = 2^1 * 5^2
         shape(30) -> (1, 1, 1)  # 30 = 2^1 * 3^1 * 5^1
     """
+
+    if n <= 0:
+        raise ValueError("Number must be greater than 0")
+
     factors = prime_factors(n)
     counts = [count for _, count in factors]
     return tuple(sorted(counts, reverse=True))
@@ -171,7 +178,6 @@ def animate_distribution(start, end, top, interval=25):
     ax.set_xlabel("Prime Factor Shape")
     ax.set_ylabel("Frequency")
     ax.set_title(f"Top {top} Prime Factor Shapes")
-    bar_container = None
 
     def update(frame):
         # Incrementally compute shapes up to the current frame
@@ -191,8 +197,8 @@ def animate_distribution(start, end, top, interval=25):
         ax.set_ylabel("Frequency")
         ax.set_title(f"Top {top} Prime Factor Shapes (N = {start} to {frame})")
 
-    # Animation
-    ani = FuncAnimation(
+    # The `ani` object must be retained to prevent garbage collection.
+    ani = FuncAnimation(  # noqa: F841
         fig, update, frames=frame_points, interval=interval, repeat=False
     )
 
