@@ -192,6 +192,7 @@ def animate_distribution(start, end, top, interval=25):
         # Update the bar chart
         ax.clear()
         ax.bar(shapes, frequencies)
+        ax.set_xticks(range(len(shapes)))        # Set tick positions explicitly
         ax.set_xticklabels(shapes, rotation=45, ha="right")
         ax.set_xlabel("Prime Factor Shape")
         ax.set_ylabel("Frequency")
