@@ -13,6 +13,7 @@ from functools import lru_cache
 import click
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+from matplotlib.animation import FFMpegWriter
 import numpy as np
 
 
@@ -70,7 +71,7 @@ def primes(start, end, plot, animate, top):
 
 
 @lru_cache(maxsize=None)
-def prime_factors(n)-> list[tuple[int, int]]:
+def prime_factors(n) -> list[tuple[int, int]]:
     """
     Generate the prime factors of a number as a list of (factor, count) tuples.
 
@@ -204,7 +205,12 @@ def animate_distribution(start, end, top, interval=25):
     )
 
     plt.tight_layout()
-    plt.show()
+
+    saveAsFile = True
+    if saveAsFile:
+        ani.save("video-out.mp4", writer=FFMpegWriter(fps=10))
+    else:
+        plt.show()
 
 
 def generate_frames(start, end, max_frames_per_bucket=250) -> list[int]:
