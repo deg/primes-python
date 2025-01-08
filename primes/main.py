@@ -180,7 +180,15 @@ def animate_distribution(
         # Incrementally compute shapes up to the current frame
         current_shapes = [tuple(shape(n)) for n in range(start, frame + 1)]
         counts = Counter(current_shapes)
-        sorted_counts = sorted(counts.items(), key=lambda x: -x[1])[:top]
+
+        def key_by_count(x):
+            return -x[1]
+
+        def key_by_shape(x):
+            return (len(x[0]), x[0])
+
+        filtered = sorted(counts.items(), key=key_by_count)[:top]
+        sorted_counts = sorted(filtered, key=key_by_shape)
 
         # Extract shapes and frequencies
         shapes = [str(list(s[0])) for s in sorted_counts]
