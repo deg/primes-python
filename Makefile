@@ -23,24 +23,39 @@ help:
 # Install dependencies
 install:
 	pipenv install --dev
+.PHONY: install
+
 
 # Format all source and test code
 format:
 	pipenv run black primes/ tests/
+.PHONY: format
+
 
 # Lint-check all code
 lint:
 	pipenv run flake8 primes/ tests/
+.PHONY: lint
+
 
 # Test all code
-test:
-	make lint
+test: lint
 	pipenv run pytest
+.PHONY: test
+
 
 # Create and serve documentation
 docs:
 	pipenv run mkdocs serve
+.PHONY: docs
 
-# Remove all work product files
+
+# Remove most work product files
 clean:
-	rm -rf __pycache__ */__pycache__ .pytest_cache .mypy_cache .coverage htmlcov .venv
+	rm -rf __pycache__ */__pycache__ .pytest_cache .mypy_cache .coverage htmlcov
+.PHONY: clean
+
+# Remove all work product files, including .venv
+clean-all: clean
+	rm -rf .venv
+.PHONY: clean
