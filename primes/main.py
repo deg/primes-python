@@ -14,6 +14,7 @@ import click
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.animation import FFMpegWriter
+from matplotlib.ticker import FuncFormatter
 import numpy as np
 
 
@@ -198,9 +199,12 @@ def animate_distribution(
         ax.clear()
         ax.bar(shapes, frequencies)
         ax.set_xticks(range(len(shapes)))
-        ax.set_xticklabels(shapes, rotation=45, ha="right")
+        ax.set_xticklabels(shapes, rotation=45, ha="right", fontsize=8)
         ax.set_xlabel("Prime Factor Shape")
         ax.set_ylabel("Frequency")
+        ax.yaxis.set_major_formatter(
+            FuncFormatter(lambda x, _: f"{int(x):,}")
+        )  # Format Y-axis with commas
         ax.set_title(f"Top {top} Prime Factor Shapes (N = {start} to {frame})")
 
     # The `ani` object must be retained to prevent garbage collection.
